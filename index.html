@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>开源了！12个Claude Skills，一张手机随手拍自动生成整套电商主图（亚马逊白底/A+/小红书封面/详情长图）</title>
+<meta name="description" content="开源了！12个Claude Skills，一张手机随手拍自动生成整套电商主图（亚马逊白底/A+/小红书封面/详情长图） 一句话介绍：ecommerce-image-skills 是一套开源的 Agent Skills，装进 Claude Code / Codex / Cursor 后，丢一张商品照片给 Agent，它会">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f5f0;--card:#fff;--text:#1a1a1a;--muted:#5c5c5c;--accent:#1a73e8;--border:#e6e2d8;--code-bg:#f0eee8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+article{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem 1.75rem 2.5rem;box-shadow:0 8px 30px rgba(0,0,0,.04)}
+h1{font-family:"Noto Serif SC",serif;font-size:clamp(1.55rem,4vw,2rem);line-height:1.4;margin:0 0 1.25rem;font-weight:700}
+h2{font-family:"Noto Serif SC",serif;font-size:1.35rem;margin:2.25rem 0 .9rem;padding-top:.5rem;border-top:1px solid var(--border);font-weight:700}
+h2:first-of-type{border-top:none;padding-top:0}h3{font-size:1.1rem;margin:1.5rem 0 .6rem}
+p{margin:.9rem 0}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+ul,ol{padding-left:1.35rem;margin:.8rem 0}li{margin:.35rem 0}strong{font-weight:700}
+img{display:block;max-width:100%;height:auto;margin:1.1rem auto .35rem;border-radius:10px;border:1px solid var(--border);background:#fafafa}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;overflow-x:auto;font-size:.88rem;line-height:1.55}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:var(--code-bg);padding:.1em .35em;border-radius:4px}
+pre code{background:none;padding:0}
+blockquote{margin:1rem 0;padding:.2rem 0 .2rem 1rem;border-left:3px solid var(--accent);color:var(--muted)}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.95rem}
+th,td{border:1px solid var(--border);padding:.55rem .7rem;text-align:left;vertical-align:top}th{background:#f3f1eb}
+.meta{color:var(--muted);font-size:.92rem;margin-bottom:1.5rem}
+.pages-banner{margin:0 0 1.25rem;padding:.75rem 1rem;background:#eef5ff;border:1px solid #d0e2ff;border-radius:10px;font-size:.95rem}
+footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.88rem}
+</style></head><body><div class="wrap"><article>
+<div class="pages-banner">在线阅读（GitHub Pages）：<a href="https://maynor996.github.io/ecommerce-main-image-skills/">https://maynor996.github.io/ecommerce-main-image-skills/</a></div>
+<h1>开源了！12个Claude Skills，一张手机随手拍自动生成整套电商主图（亚马逊白底/A+/小红书封面/详情长图）</h1>
+<div class="meta">原文：<a href="https://blog.csdn.net/xianyu120/article/details/167084804">https://blog.csdn.net/xianyu120/article/details/167084804</a></div>
+<h2>开源了！12个Claude Skills，一张手机随手拍自动生成整套电商主图（亚马逊白底/A+/小红书封面/详情长图）</h2>
+<blockquote>
+<p>一句话介绍：<strong>ecommerce-image-skills</strong> 是一套开源的 Agent Skills，装进 Claude Code / Codex / Cursor 后，丢一张商品照片给 Agent，它会按平台规则出白底主图、场景图、卖点图、A+ 模块、尺寸图、模特图、大促 Banner、小红书封面和淘宝详情长图，并用脚本做质检。</p>
+<p>仓库地址：https://github.com/xianyu110/ecommerce-image-skills （MIT 协议）</p>
+</blockquote>
+<p><img alt="一张商品图进，6 类平台图出（全部为 GPT Image 2.5 真实输出）" src="imgs/01.jpeg" /></p>
+<h3>一、先说痛点：做一套商品图到底有多麻烦</h3>
+<p>做过跨境或者淘宝的朋友应该都经历过：</p>
+<ul>
+<li><strong>一个 SKU 要十几张图</strong> ：Amazon 主图 + 6 张副图 + A+，淘宝 5 张主图 + 750 宽详情页，小红书还要 3:4 封面……</li>
+<li><strong>每个平台规则不一样</strong> ：Amazon 主图要纯白 <code>#FFFFFF</code>、主体占画面 85% 以上、不能有文字；淘宝详情页宽度 750；小红书封面 3:4。</li>
+<li><strong>直接让 AI 画，产品经常“被改了”</strong> ：图是好看了，但瓶盖变了、Logo 拼错了、颜色偏了，根本没法上架。</li>
+</ul>
+<p>我试过把这些规则写成一堆 prompt，结果是：prompt 越写越长，换个产品又要重来，而且“白底到底白不白、占比够不够”还得自己拿 PS 去量。</p>
+<p>所以干脆把这件事拆成了 12 个可单独安装的 Agent Skill，规则、模板、质检脚本全部写进去，让 Agent 按流程干活。</p>
+<h3>二、项目是什么</h3>
+<p>每个 Skill 就是一个文件夹：<code>SKILL.md</code>（流程 + 提示词模板 + 质检清单）+ <code>scripts/</code>（确定性的 Python 脚本）。和单纯的 prompt 合集相比，它多做了这几件事：</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>具体做法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔒 产品身份锁定</td>
+<td>每个 skill 第一步先写 <code>PRODUCT IDENTITY LOCK</code>（形状/颜色/Logo/文字/配件），原样带进每一条提示词，减少“产品被改”</td>
+</tr>
+<tr>
+<td>📐 平台规格内置</td>
+<td>Amazon 主图（#FFFFFF、≥85%）、A+ 模块尺寸、淘宝 750 宽详情、小红书 3:4、各平台 Banner 尺寸</td>
+</tr>
+<tr>
+<td>🧠 模型路由</td>
+<td>默认 GPT Image 2.5 <strong>Flare</strong> （快、适合场景和多版本）；要保 Logo/小字、做局部编辑时切 <strong>Sunburst</strong></td>
+</tr>
+<tr>
+<td>🛠 脚本做确定性的事</td>
+<td>白底/占比检查与修复、A+ 裁切、拼图、详情页拼接切片、批量换背景（断点续跑 + 预算上限）</td>
+</tr>
+<tr>
+<td>🚦 三种出图方式</td>
+<td>① Agent 自带生图工具 ② 配 <code>GPTIMAGE_API_KEY</code> 用 <code>generate.py</code> ③ 都没有就输出最终提示词 + 在线运行链接</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Before → After：同一张随手拍 → 6 种平台图" src="imgs/02.gif" /></p>
+<h3>三、技能清单（12 个）</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>做什么</th>
+<th>默认模型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>amazon-white-background</code></td>
+<td>Amazon 白底主图：纯白 #FFFFFF、主体 ≥85%、无文字，附检查/修复脚本</td>
+<td>Sunburst</td>
+</tr>
+<tr>
+<td><code>lifestyle-scene</code></td>
+<td>生活场景图：厨房/户外/办公/健身等场景库，产品保真</td>
+<td>Flare</td>
+</tr>
+<tr>
+<td><code>model-try-on</code></td>
+<td>模特上身图：平铺/挂拍 → 模特试穿，保留面料、颜色、Logo</td>
+<td>Sunburst</td>
+</tr>
+<tr>
+<td><code>selling-point-infographic</code></td>
+<td>卖点信息图：一图一卖点、图标 + 标注线，文案逐字确认</td>
+<td>Sunburst</td>
+</tr>
+<tr>
+<td><code>amazon-a-plus</code></td>
+<td>A+ 模块：970×600 / 970×300 / 300×300 / 1464×600…，风格锁 + 裁切脚本</td>
+<td>Flare</td>
+</tr>
+<tr>
+<td><code>size-chart</code></td>
+<td>尺寸规格图：cm/inch 双单位、服装尺码表，数字只用用户提供的</td>
+<td>Sunburst</td>
+</tr>
+<tr>
+<td><code>multi-angle-set</code></td>
+<td>多角度套图：正/侧/背/顶/45°/细节，统一光位 + 拼图脚本</td>
+<td>Sunburst</td>
+</tr>
+<tr>
+<td><code>sale-banner</code></td>
+<td>大促 Banner：淘宝天猫 / Shopee / Lazada / TikTok Shop / Amazon</td>
+<td>Flare</td>
+</tr>
+<tr>
+<td><code>batch-background-swap</code></td>
+<td>批量换背景 / SKU 换色：断点续跑、重试、预算上限、CSV 日志</td>
+<td>Sunburst</td>
+</tr>
+<tr>
+<td><code>xiaohongshu-cover</code></td>
+<td>小红书 3:4 封面：6 种版式、大字标题</td>
+<td>Flare</td>
+</tr>
+<tr>
+<td><code>taobao-detail-long-image</code></td>
+<td>淘宝/天猫/拼多多 750 宽详情长图：分屏规划 + 拼接切片脚本</td>
+<td>Flare</td>
+</tr>
+<tr>
+<td><code>ecommerce-listing-suite</code></td>
+<td>总入口：按平台规划整套图，调度上面 11 个 skill 并质检</td>
+<td>Auto</td>
+</tr>
+</tbody>
+</table>
+<h3>四、安装</h3>
+<p><strong>方式 1：skills CLI 一行安装（推荐）</strong></p>
+<pre><code>npx skills add xianyu110/ecommerce-image-skills
+</code></pre>
+<p>Claude Code 用户也可以走插件市场：</p>
+<pre><code>/plugin marketplace add xianyu110/ecommerce-image-skills
+</code></pre>
+<p><strong>方式 2：手动复制</strong></p>
+<pre><code>git clone https://github.com/xianyu110/ecommerce-image-skills.git
+cd ecommerce-image-skills
+
+# Claude Code（全局；或复制到项目内 .claude/skills/）
+mkdir -p ~/.claude/skills &amp;&amp; cp -r skills/* ~/.claude/skills/
+# Codex
+mkdir -p ~/.codex/skills &amp;&amp; cp -r skills/* ~/.codex/skills/
+# Cursor（项目内）
+mkdir -p .cursor/skills &amp;&amp; cp -r skills/* .cursor/skills/
+</code></pre>
+<p>只想要某一个？复制对应文件夹即可，比如 <code>cp -r skills/amazon-white-background ~/.claude/skills/</code>。每个 skill 自带所需脚本，互不依赖。</p>
+<h3>五、实战：从一张随手拍到一张能过检的亚马逊白底主图</h3>
+<p>下面用仓库自带的演示商品「AURA」水杯（AI 生成的虚构产品）走一遍。</p>
+<h4>Step 1：直接对 Agent 说人话</h4>
+<pre><code>用 amazon-white-background 把 ./photos/bottle.jpg 做成亚马逊白底主图，并跑检查脚本
+</code></pre>
+<p>Agent 加载 skill 后，第一步不是急着出图，而是先写身份锁：</p>
+<pre><code>PRODUCT IDENTITY LOCK (do not change):
+- Shape &amp; proportions: tall cylinder, rounded shoulders
+- Colour &amp; finish: matte sage green body, natural bamboo lid
+- Logo &amp; printed text: white "AURA" wordmark centred on upper body
+- Parts &amp; details: black carry loop on the lid
+- Must NOT appear: accessories not in the box, extra logos, invented claims
+</code></pre>
+<p>skill 里写死了规则：<strong>只用照片里看得到、或用户确认过的事实</strong> ，容量、材质不知道就问或者不写，不编参数、不编认证。</p>
+<h4>Step 2：出图（有 Key 就走脚本）</h4>
+<p>如果你的 Agent 自带生图工具，它会直接调用；没有的话配一个 OpenAI 兼容接口，用自带的零依赖脚本：</p>
+<pre><code>export GPTIMAGE_API_KEY=sk-...
+export GPTIMAGE_BASE_URL=https://tryallapi.com/v1   # 任意 OpenAI 兼容网关都行，默认 https://api.openai.com
+python skills/amazon-white-background/scripts/generate.py --model sunburst \
+  --image bottle.jpg --size 1024x1024 --prompt-file prompt.txt --out out/main.png
+</code></pre>
+<p><code>--image</code> 可以重复传多张（正面/侧面/Logo 特写），不传就是文生图。</p>
+<p><img alt="输入的手机随手拍 vs amazon-white-background 输出" src="imgs/03.jpeg" /></p>
+<h4>Step 3：跑质检脚本（这一步是重点）</h4>
+<p>白底“看起来白”不等于“真的是 #FFFFFF”。skill 要求交付前必须跑检查：</p>
+<pre><code>pip install pillow numpy   # 只需一次
+python scripts/check_main_image.py out/amazon-white-background.webp
+# 可选参数：--min-coverage 0.85 --min-size 1600 --tolerance 3
+</code></pre>
+<p>下面是我对仓库展示图实际跑出来的结果：</p>
+<p><img alt="check_main_image.py 实际输出：白底、#FFFFFF 占比、主体覆盖率、尺寸 4 项全部 PASS" src="imgs/04.png" /></p>
+<p>脚本检查 4 项：边缘白色占比、背景纯 <code>#FFFFFF</code> 占比、主体覆盖率（≥85%）、最长边像素。如果白底偏灰，用 <code>--fix out.png</code> 把近白像素统一成 <code>#FFFFFF</code>；覆盖率不够，<code>--fix</code> 也会按 87% 重新裁切。</p>
+<blockquote>
+<p>说明一下：这张 1000px 的展示图满足最低要求，但 skill 里写的推荐尺寸是 1600–2000px（方便缩放查看），正式上架建议按推荐尺寸出。</p>
+</blockquote>
+<h4>Step 4：一键出整套图</h4>
+<p>单张跑通后，可以交给总入口：</p>
+<pre><code>给这个水杯出一整套 Amazon 7 张图（ecommerce-listing-suite），先给我计划
+</code></pre>
+<p>它会先出一张计划表（<code># | 素材 | skill | 尺寸 | 模型 | 文案</code>），<strong>你确认后才开始生成</strong> （省钱），然后逐张调度对应 skill，最后给每张图一份 QA：产品身份 ✔/✘ · 平台规格 ✔/✘ · 文字拼写 ✔/✘，只重做不合格的那张。</p>
+<h3>六、效果展示</h3>
+<p>以下都是 skill 的真实输出（GPT Image 2.5，未 PS）：</p>
+<p><strong>卖点信息图</strong> （<code>selling-point-infographic</code>，Sunburst，英文文案逐字渲染）：</p>
+<p><img alt="selling-point-infographic 输出" src="imgs/05.jpeg" /></p>
+<p><strong>小红书封面</strong> （<code>xiaohongshu-cover</code>，Flare，中文大字标题 3:4）：</p>
+<p><img alt="xiaohongshu-cover 输出" src="imgs/06.jpeg" /></p>
+<p><strong>大促 Banner</strong> （<code>sale-banner</code>，Flare，11.11 Shopee / TikTok Shop 风格）：</p>
+<p><img alt="sale-banner 输出" src="imgs/07.jpeg" /></p>
+<h3>七、进阶技巧</h3>
+<p><strong>1. 批量换背景 / SKU 换色，带预算上限</strong></p>
+<p>40 张图换纯白底，不想一不小心烧掉一堆额度：</p>
+<pre><code>python scripts/batch_edit.py ./photos ./out \
+  --prompt-file swap.txt --model sunburst --size 1024x1024 \
+  --max-images 50 --retries 2
+
+# 换色：每个颜色出一份，prompt 里的 {colour} 会被替换
+python scripts/batch_edit.py ./photos ./out --prompt-file recolor.txt \
+  --var colour="Navy Blue (#1F2A44)" --var colour="Coral (#FF6F61)"
+</code></pre>
+<p>脚本会跳过 <code>out/</code> 里已存在的文件（断点续跑），失败自动重试，并写 <code>out/log.csv</code>。skill 里还建议<strong>先拿 2 张图试跑</strong> 再全量。</p>
+<p><strong>2. 淘宝详情长图：先分屏，再拼接切片</strong></p>
+<p><code>taobao-detail-long-image</code> 默认 8 屏结构（首屏 → 痛点 → 卖点×3 → 场景 → 细节 → 参数售后），所有屏共用一段 STYLE LOCK 保证风格一致，最后：</p>
+<pre><code>python scripts/stitch_long_image.py s1.png s2.png s3.png ... --width 750 --slice 1546 --out detail-750.jpg
+</code></pre>
+<p>skill 里也提醒了广告法：避免“最/第一/国家级/绝对”，“保温 24h、食品级”这类说法必须能证明。</p>
+<p><strong>3. 什么时候切 Sunburst</strong></p>
+<p>画面里有必须逐字正确的 Logo、标签、小字，或者是“只换背景其他都不动”的局部编辑，就切 Sunburst；其余场景、草稿、多版本用 Flare 更快。</p>
+<h3>八、没有 Claude / API？</h3>
+<p>这些 skill 跑在 Claude Code / Codex / Cursor 等 Agent 里；用脚本出图时需要一个 OpenAI 兼容接口。还没有的话：</p>
+<ul>
+<li><strong>方法一 · Claude 国内镜像站</strong> ：<code>https://claude-opus.top/</code> —— 国内直接用 Claude，把 <code>SKILL.md</code> 贴进去也能按流程出提示词</li>
+<li><strong>方法二 · 一站式 API</strong> ：<code>https://tryallapi.com/register?aff=5A6A</code> —— Claude / GPT / Gemini 一个 Key，设置 <code>GPTIMAGE_BASE_URL=https://tryallapi.com/v1</code> 即可给 <code>generate.py</code> 出图</li>
+<li><strong>不想配环境，只想在线出图</strong> ：<code>https://gptimage2.asia/</code> —— 浏览器里直接用 GPT Image 2.5，把 skill 里的提示词贴进去、上传商品图即可</li>
+</ul>
+<h3>九、写在最后</h3>
+<p>这个项目的思路其实很简单：<strong>把美工脑子里的平台规则和检查动作写成 Agent 能执行的流程</strong> ，AI 负责出图，脚本负责“量尺寸、验白底”这种不能靠感觉的事。</p>
+<p>平台规则会变，上架前请以各平台卖家后台的最新说明为准。新平台规格、更好的模板、更多脚本，欢迎提 PR。</p>
+<p>如果这套 skill 帮你省下了一个下午的美工时间，欢迎点个 ⭐ Star，让更多卖家看到：</p>
+<p>👉 <strong>https://github.com/xianyu110/ecommerce-image-skills</strong></p>
+<p><strong>姊妹仓库，同一套用法：</strong></p>
+<ul>
+<li>电商短视频 Skills（商品图 → 带配音字幕的 9:16 带货视频）：https://github.com/xianyu110/ecommerce-video-skills</li>
+<li>品牌 IP 视觉套件 Skills（IP 形象 · Logo · VI · 包装 · 表情包）：https://github.com/xianyu110/brand-ip-kit-skills</li>
+<li>国内上线 Skills（ICP 备案 · 微信/支付宝支付 · 小程序 · 隐私合规）：https://github.com/xianyu110/golive-china-skills</li>
+</ul>
+<hr />
+<p>我是 MaynorAI 团队，分享 AI 编程、AI SaaS 工具出海、一人团队搭建经验。</p>
+<footer>镜像自 CSDN @xianyu120 · 内容以原文为准</footer>
+</article></div></body></html>
